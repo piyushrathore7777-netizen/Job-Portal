@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from .models import Job, Apply
 from .serializers import JobSerializer
 from .models import Company
+import requests
+
 
 
 # Home
@@ -117,6 +119,7 @@ def add_job(request):
     title = data.get("title")
     description = data.get("description")
     salary = data.get("salary")
+    category = data.get("category",)
     company_id = data.get("company")
 
     try:
@@ -128,6 +131,7 @@ def add_job(request):
         title=title,
         description=description,
         salary=salary,
+        category=category,
         company=company
     )
 
@@ -216,3 +220,34 @@ def get_job_applicants(request, job_id):
         })
 
     return Response(data)
+
+
+
+@api_view(['GET'])
+def external_jobs(request):
+    url = "https://jsearch.p.rapidapi.com/search"
+
+    querystring = {
+        "query": "developer jobs in india",
+        "page": "1"
+    }
+
+    headers = {
+        "X-RapidAPI-Key": "cfe9cfbfb3mshf31085d505cf35cp1ac74bjsn1ba4da816651",
+        "X-RapidAPI-Host": "linkedin-job-search-api.p.rapidapi.com"
+    }
+
+    response = requests.get(url, headers=headers, params=querystring)
+    data = response.json()
+
+    jobs = []
+
+    for job in data.get("data", []):
+        jobs.append({
+            "title": job.get("job_title"),
+            "company": job.get("employer_name"),
+            "salary": job.get("job_salary"),
+            "apply_link": job.get("job_apply_link"),
+        })
+
+    return Response(jobs)

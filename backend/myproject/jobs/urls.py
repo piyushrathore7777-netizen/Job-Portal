@@ -12,6 +12,7 @@ from .views import (
     job_applicants,
     company_register,
     get_job_applicants,
+    external_jobs,
     
 )
 
@@ -28,7 +29,8 @@ urlpatterns = [
     path("add/",add_job),
     path("company/jobs/<int:company_id>/",get_company_jobs),
     path("delete/<int:id>/",delete_job),
-    path("applicants/int:job_id>/",job_applicants),
+    path("applicants/<int:job_id>/",job_applicants),
     path("company/register/",company_register),
     path("applicant/<int:job_id>/",get_job_applicants),
+    path("external/",external_jobs),
 ]

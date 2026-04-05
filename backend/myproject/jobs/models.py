@@ -17,6 +17,7 @@ class Job(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     salary = models.IntegerField()
+    category = models.CharField(max_length=100,default="General")
     apply_link = models.URLField(blank=True, null=True)  # 🔥 ADD ONLY THIS    
 
     def __str__(self):
