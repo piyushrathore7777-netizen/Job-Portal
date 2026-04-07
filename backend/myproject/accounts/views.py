@@ -24,23 +24,31 @@ def register(request):
     return Response({"message": "User registered successfully"})
 
 
-# LOGIN
 @api_view(['POST'])
 def login(request):
     username = request.data.get("username")
+    email = request.data.get("email")
     password = request.data.get("password")
 
+    # 🔥 STEP 1: agar username nahi mila → email se find karo
+    if not username and email:
+        user_obj = User.objects.filter(email=email).first()
+        if user_obj:
+            username = user_obj.username
+
+    # 🔥 STEP 2: authenticate
     user = authenticate(username=username, password=password)
 
     if user:
         return Response({
             "message": "Login successful",
-            "username": user.username,
-            "email": user.email
+            "user": {
+                "username": user.username,
+                "email": user.email
+            }
         })
     else:
         return Response({"error": "Invalid credentials"})
-
 
 # COMPANY REGISTER
 @api_view(['POST'])
